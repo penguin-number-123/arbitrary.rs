@@ -13,5 +13,5 @@ fn main() {
     let e = BigFloat::sub_mut(&mut c, &mut d);
     //println!("Elapsed: {:?}",i1.elapsed()/1000);
     println!("{}",e.to_string());
-    BigFloat::mul_mut(&mut c, &mut d);
+    BigFloat::karatsuba(vec![1,2,3], vec![4,5,6]);
 }

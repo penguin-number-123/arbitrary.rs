@@ -270,10 +270,43 @@ pub mod arbitrary{
             let mult = BigFloat::mul_2(&a.vals, &b.vals);
             
         }
-        println!("{:?}",BigFloat::splice_stepped(&a.vals));
+        let mut splice_a = BigFloat::splice_stepped(&a.vals);
+        let mut splice_b = BigFloat::splice_stepped(&b.vals);
+        //println!("{}",BigFloat::new(true,&splice_a[0],splice_a[0].len() as i64).to_string());
         println!("{:?}",BigFloat::splice_stepped(&b.vals));
-        
         return BigFloat::zero();
+    }
+    fn number_to_vec(n: i16) -> Vec<i8> {
+        let mut digits:Vec<i8> = Vec::new();
+        let mut n = n;
+        while n > 9 {
+            digits.push((n % 10) as i8);
+            n = n / 10;
+        }
+        digits.push(n as i8);
+        digits.reverse();
+        digits
+    }
+    pub fn karatsuba(a:BigFloat,b:BigFloat)-> BigFloat{
+        if (a.vals.len()<=2 && b.vals.len()<=2){
+            let mult = BigFloat::mul_2(&a.vals, &b.vals);
+            println!("{:?}",BigFloat::number_to_vec(mult));
+            return BigFloat::zero();
+        }
+        let mut splice_a = BigFloat::splice_stepped(&a.vals);
+        let mut splice_b = BigFloat::splice_stepped(&b.vals);
+        println!("{:?}",splice_a);
+        println!("{:?}",splice_b);
+        let first_a = BigFloat::new(true,splice_a[0],0);
+        let first_b = BigFloat::new(true,splice_b[0],0);
+        let sec_b = BigFloat::new(true,splice_b[1],0);
+        let sec_a = BigFloat::new(true,splice_a[1],0);
+        
+        let k_1 =BigFloat::karatsuba(first_a,first_b);
+        k_1.lshift(splice_a[1].len() as i64 *2);
+        
+        
+        return 
     }
   } 
   
