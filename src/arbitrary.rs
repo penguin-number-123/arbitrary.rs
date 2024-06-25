@@ -20,9 +20,7 @@ pub mod arbitrary{
         if decimal< 0 {
             panic!("ValueError: Decimal point position is negative! Position:{}", decimal);
         }
-        if decimal as usize> vals.len(){
-            panic!("ValueError: Decimal point postion is beyond length of number! Position:{}, Length of number: {}", decimal, vals.len());
-        }
+        
         BigFloat {
             sign:sign,
             vals:vals,
@@ -236,16 +234,12 @@ pub mod arbitrary{
       pub fn lshift(&mut self,digits:i64){
         let mut zeroes:Vec<i8> = vec![0;digits as usize];
         self.vals.append(&mut zeroes);
+        self.decimal += digits as i64;
       }
-      pub fn splice_stepped(data: &Vec<i8>) -> Vec<Vec<i8>> {
-        (0..2).map(|offset|
-            data
-            .iter()
-            .copied()
-            .skip(offset)
-            .step_by(2)
-            .collect()
-        ).collect()
+      pub fn splice_stepped(data: &Vec<i8>) ->[Vec<i8>;2] {
+        let mut v0 =data.clone();
+        let v = v0.split_off((data.len()+1)/2);
+        return [v0, v];
     }
     pub fn mul_2(a:&Vec<i8>,b:&Vec<i8>) -> i16{
         let mut a_comp:i16 = 0;
@@ -259,23 +253,10 @@ pub mod arbitrary{
         if b.len() == 2{
             b_comp = (b[0]*10+b[1]) as i16;
         }
+        println!("{}*{} = {}",a_comp,b_comp,a_comp*b_comp);
         return a_comp*b_comp;
     }
-    pub fn mul_mut(a:&mut BigFloat,b:&mut BigFloat) -> BigFloat{
-        BigFloat::normalize_mut(a, b);
-        if a.is_zero() || b.is_zero(){
-            return BigFloat::zero();
-        }
-        if (a.vals.len()<=2 && b.vals.len()<=2){
-            let mult = BigFloat::mul_2(&a.vals, &b.vals);
-            
-        }
-        let mut splice_a = BigFloat::splice_stepped(&a.vals);
-        let mut splice_b = BigFloat::splice_stepped(&b.vals);
-        //println!("{}",BigFloat::new(true,&splice_a[0],splice_a[0].len() as i64).to_string());
-        println!("{:?}",BigFloat::splice_stepped(&b.vals));
-        return BigFloat::zero();
-    }
+
     fn number_to_vec(n: i16) -> Vec<i8> {
         let mut digits:Vec<i8> = Vec::new();
         let mut n = n;
@@ -287,26 +268,73 @@ pub mod arbitrary{
         digits.reverse();
         digits
     }
-    pub fn karatsuba(a:BigFloat,b:BigFloat)-> BigFloat{
-        if (a.vals.len()<=2 && b.vals.len()<=2){
-            let mult = BigFloat::mul_2(&a.vals, &b.vals);
-            println!("{:?}",BigFloat::number_to_vec(mult));
+    pub fn quad_mult(a:&mut BigFloat,b:&mut BigFloat)->BigFloat{
+        let mut new_vals:Vec<i8> = vec![0;a.vals.len()+b.vals.len()];
+        BigFloat::normalize_mut(a, b);
+        let mut k = 0;
+        
+        let l_max = new_vals.len();
+        for i in (0..a.vals.len()).rev(){
+            if a.vals[i] == 0{
+                
+                continue;
+            }
+            k = 0;
+            for j in (0..b.vals.len()).rev(){
+                println!("{} * {} = {}",a.vals[i],b.vals[j],a.vals[i]*b.vals[j]);
+                let t = a.vals[i]*b.vals[j]+k+new_vals[i+j];
+                new_vals[i+j] = t%10;
+                k = (t)/10;
+                println!("New_vals: {:?}" , new_vals);
+                println!("carry: {}",k);
+                
+            }
+            
+            new_vals[a.vals.len()+(l_max-i)-2]+=k;
+            
+        
+        }
+        return BigFloat::new((a.sign&&b.sign)||(!a.sign&&!b.sign),new_vals,a.decimal+b.decimal)
+    }
+
+    pub fn karatsuba(a:&mut BigFloat,b:&mut BigFloat)-> BigFloat{
+        BigFloat::normalize_mut(a,b);
+        if a.is_zero() || b.is_zero(){
             return BigFloat::zero();
+        }
+        if (a.vals.len()<=2 && b.vals.len()<=2){
+            
+            let mult = BigFloat::mul_2(&a.vals, &b.vals);
+            println!("mult: {}",mult);
+            let vals = BigFloat::number_to_vec(mult);
+            println!("{:?}",vals);
+            let l = vals.len() as i64;
+            return BigFloat::new(true,vals,l);
         }
         let mut splice_a = BigFloat::splice_stepped(&a.vals);
         let mut splice_b = BigFloat::splice_stepped(&b.vals);
         println!("{:?}",splice_a);
         println!("{:?}",splice_b);
-        let first_a = BigFloat::new(true,splice_a[0],0);
-        let first_b = BigFloat::new(true,splice_b[0],0);
-        let sec_b = BigFloat::new(true,splice_b[1],0);
-        let sec_a = BigFloat::new(true,splice_a[1],0);
+        let mut first_a = BigFloat::new(true,splice_a[0].to_owned(),a.decimal - splice_b[1].len() as i64 );
+        let mut first_b = BigFloat::new(true,splice_b[0].to_owned(),a.decimal - splice_b[1].len() as i64);
+        let mut sec_b = BigFloat::new(true,splice_b[1].to_owned(),splice_b[1].len() as i64);
+        let mut sec_a = BigFloat::new(true,splice_a[1].to_owned(),splice_b[1].len() as i64);
+        let mut i = BigFloat::add_mut(&mut first_a,&mut sec_a);
+        let mut j = BigFloat::add_mut(&mut first_b,&mut sec_b);
+        println!("i: {}",i.to_string());
+        println!("j: {}",j.to_string());
+        let mut k_2 = BigFloat::karatsuba(&mut first_a,&mut first_b);
         
-        let k_1 =BigFloat::karatsuba(first_a,first_b);
-        k_1.lshift(splice_a[1].len() as i64 *2);
+        let mut k_0 = BigFloat::karatsuba(&mut sec_a,&mut sec_b);
+        let mut ij = BigFloat::karatsuba(&mut i,&mut j);
+        println!("i*j: {}",ij.to_string());
+        let mut k_1 = BigFloat::sub_mut(&mut BigFloat::sub_mut(&mut ij,&mut k_2) ,&mut k_0);
+        k_2.lshift(splice_a[1].len() as i64 *2);
+        println!("k_2: {:?}",k_2.to_string());
+        k_1.lshift(splice_b[1].len() as i64);
+        println!("k_1: {:?}",k_1.to_string());
         
-        
-        return 
+        return BigFloat::add_mut(&mut BigFloat::add_mut(&mut k_2,&mut k_1),&mut k_0);
     }
   } 
   
