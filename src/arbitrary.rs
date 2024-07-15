@@ -296,10 +296,30 @@ pub mod arbitrary{
         }
         return BigFloat::new((a.sign&&b.sign)||(!a.sign&&!b.sign),new_vals,a.decimal+b.decimal)
     }
-    pub fn mult_small(a:&mut BigFloat, b:&mut BigFloat){
-        let mut new_vals:Vec<i8> = vec![0;a.vals.len()+b.vals.len()];
+    pub fn mult_small(a:&mut BigFloat, b:&mut BigFloat) -> BigFloat{
+        let length = a.vals.len()+b.vals.len();
+        let mut new_vals:Vec<i8> = vec![0;length];
         BigFloat::normalize_mut(a,b);
-        for i in (0..a.vals.len())
+        for i in (0..a.vals.len()).rev(){
+            if a.vals[i]==0{
+                continue;
+            }
+            for j in (0..b.vals.len()).rev(){
+                //Notes: i is constant in this space, so imagine a being the number below in the multiplication
+                
+                let t = a.vals[i]*b.vals[j];
+                let carry = t/10;
+                new_vals[new_vals.len()-i-1] = carry;
+
+
+            }
+        }
+
+        //Multiplication truth table:
+        //True = +, False = -. Thus, TT = T, FF = T, TF = F, FT = F
+        //This is XNOR, i.e. (A & B) || (!A & !B)
+        return BigFloat::new((a.sign&&b.sign)||(!a.sign&&!b.sign),new_vals,a.decimal+b.decimal);
+
     }
     pub fn karatsuba(a:&mut BigFloat,b:&mut BigFloat)-> BigFloat{
         BigFloat::normalize_mut(a,b);

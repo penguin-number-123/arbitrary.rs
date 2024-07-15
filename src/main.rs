@@ -6,7 +6,7 @@ fn main() {
     let mut b = BigFloat::new(false, vec![1,0,0,0,0,0],3);
     let mut c = BigFloat::from_str("23");
     let mut d = BigFloat::from_str("456");
-    println!("{:?}",BigFloat::quad_mult(&mut c,&mut d).get_vals());
+    println!("{:?}",BigFloat::mult_small(&mut c,&mut d).to_string());
     println!("{}",BigFloat::greater_than(&c, &d));
     println!("{}",d.to_string());
     println!("{}",BigFloat::sub_mut(&mut a,&mut b).to_string());
