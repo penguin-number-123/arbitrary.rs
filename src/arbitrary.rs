@@ -296,7 +296,11 @@ pub mod arbitrary{
         }
         return BigFloat::new((a.sign&&b.sign)||(!a.sign&&!b.sign),new_vals,a.decimal+b.decimal)
     }
-
+    pub fn mult_small(a:&mut BigFloat, b:&mut BigFloat){
+        let mut new_vals:Vec<i8> = vec![0;a.vals.len()+b.vals.len()];
+        BigFloat::normalize_mut(a,b);
+        for i in (0..a.vals.len())
+    }
     pub fn karatsuba(a:&mut BigFloat,b:&mut BigFloat)-> BigFloat{
         BigFloat::normalize_mut(a,b);
         if a.is_zero() || b.is_zero(){
@@ -313,27 +317,18 @@ pub mod arbitrary{
         }
         let mut splice_a = BigFloat::splice_stepped(&a.vals);
         let mut splice_b = BigFloat::splice_stepped(&b.vals);
-        println!("{:?}",splice_a);
-        println!("{:?}",splice_b);
         let mut first_a = BigFloat::new(true,splice_a[0].to_owned(),a.decimal - splice_b[1].len() as i64 );
         let mut first_b = BigFloat::new(true,splice_b[0].to_owned(),a.decimal - splice_b[1].len() as i64);
         let mut sec_b = BigFloat::new(true,splice_b[1].to_owned(),splice_b[1].len() as i64);
         let mut sec_a = BigFloat::new(true,splice_a[1].to_owned(),splice_b[1].len() as i64);
         let mut i = BigFloat::add_mut(&mut first_a,&mut sec_a);
         let mut j = BigFloat::add_mut(&mut first_b,&mut sec_b);
-        println!("i: {}",i.to_string());
-        println!("j: {}",j.to_string());
         let mut k_2 = BigFloat::karatsuba(&mut first_a,&mut first_b);
-        
         let mut k_0 = BigFloat::karatsuba(&mut sec_a,&mut sec_b);
         let mut ij = BigFloat::karatsuba(&mut i,&mut j);
-        println!("i*j: {}",ij.to_string());
         let mut k_1 = BigFloat::sub_mut(&mut BigFloat::sub_mut(&mut ij,&mut k_2) ,&mut k_0);
         k_2.lshift(splice_a[1].len() as i64 *2);
-        println!("k_2: {:?}",k_2.to_string());
         k_1.lshift(splice_b[1].len() as i64);
-        println!("k_1: {:?}",k_1.to_string());
-        
         return BigFloat::add_mut(&mut BigFloat::add_mut(&mut k_2,&mut k_1),&mut k_0);
     }
   } 
