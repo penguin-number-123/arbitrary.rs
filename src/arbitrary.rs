@@ -339,6 +339,7 @@ pub mod arbitrary{
         let mut k_0 = BigFloat::karatsuba(&mut sec_a,&mut sec_b);
         let mut ij = BigFloat::karatsuba(&mut i,&mut j);
         let mut k_1 = BigFloat::sub_mut(&mut BigFloat::sub_mut(&mut ij,&mut k_2) ,&mut k_0);
+        println!("{}",k_1.to_string());
         k_2.lshift(splice_a[1].len() as i64 *2);
         k_1.lshift(splice_b[1].len() as i64);
         return BigFloat::add_mut(&mut BigFloat::add_mut(&mut k_2,&mut k_1),&mut k_0);
