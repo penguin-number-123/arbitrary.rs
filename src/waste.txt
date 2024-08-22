@@ -1,0 +1,28 @@
+ pub fn normalize_mut(a:&mut BigFloat, b:&mut BigFloat){
+        //Need to consider decimal point and the lenght of the array
+        //1,2,3,4,5 pos = 5 and 1,2,3 pos 0 are 12345 and 0.123
+        //Then, we need to pad 1,2,3 into 0,0,0,0,0,1,2,3 and 1,2,3,4,5,0,0,0
+        //1,2,3,4,5 pos 2 and 1,2,3,4 pos 4 will become 12.345 and 1234
+        //We need 0,0,1,2,3,4,5 (+2) and 1,2,3,4,0,0,0 (+3 = length vals - decimal point) 
+        let difference_a = a.vals.len() as i64 - a.decimal -1;
+        let difference_b = b.vals.len() as i64 - b.decimal -1;
+        let pad_zeroes_back:Vec<i8> = vec![0;(difference_a-difference_b).abs() as usize];
+        let mut pad_zeroes_front:Vec<i8> = vec![0;(a.decimal-b.decimal).abs() as usize];
+        if difference_b<difference_a{
+            //b has more numbers after decimal point
+            b.vals.extend(pad_zeroes_back);
+        }else if difference_b>difference_a{
+            a.vals.extend(pad_zeroes_back);
+        }
+        if b.decimal<a.decimal{
+            pad_zeroes_front.extend(b.vals.clone());
+            b.decimal += a.decimal-b.decimal;
+            b.vals = pad_zeroes_front.clone();
+        }else if b.decimal>a.decimal{
+            pad_zeroes_front.extend(a.vals.clone());
+            a.decimal += b.decimal-a.decimal;
+            a.vals = pad_zeroes_front.clone();
+            
+        }
+        
+    }
