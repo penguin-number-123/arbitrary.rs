@@ -1,3 +1,4 @@
+use std::cmp;
 pub mod arbitrary{
   //sign: True -> Positive, False -> Negative
   //Vals: Stores the digits of the number.
@@ -284,8 +285,12 @@ pub mod arbitrary{
         digits
     }
     
-    pub fn karatsuba(a:&mut BigFloat,b:&mut BigFloat)-> BigFloat{
-        BigFloat::normalize_mut(a, b);
+    pub fn karatsuba(u: BigFloat,v: BigFloat)-> BigFloat{
+        let mut a = u.clone();
+        let mut b = v.clone();
+        //BigFloat::normalize_mut(&mut a, &mut b);
+        println!("a {}",a.to_string());
+        println!("b {}",b.to_string());
         if a.vals==[] || b.vals==[]{
             return BigFloat::zero();
         }
@@ -293,31 +298,39 @@ pub mod arbitrary{
             return BigFloat::zero();
         }
         if (a.vals.len()<=30 || b.vals.len()<=30){
-            return BigFloat::quad_mult(a, b)
+            return BigFloat::quad_mult(&mut a, &mut b)
         }
-        let mut splice_a = BigFloat::splice_stepped(&a.vals);
-        let mut splice_b = BigFloat::splice_stepped(&b.vals);
-        
-        let mut first_a = BigFloat::new(true,splice_a[0].to_owned(),a.decimal - splice_a[1].len() as i64 );
-        let mut first_b = BigFloat::new(true,splice_b[0].to_owned(),b.decimal - splice_b[1].len() as i64);
-        let mut sec_b = BigFloat::new(true,splice_b[1].to_owned(),splice_b[1].len() as i64);
-        let mut sec_a = BigFloat::new(true,splice_a[1].to_owned(),splice_a[1].len() as i64);
-        //println!("First a {}",first_a.to_string());
-        //println!("First b {}",first_b.to_string());
-        //println!("sec a {}",sec_a.to_string());
-        //println!("sec a {}",sec_a.to_string());
-        let mut i = BigFloat::add_mut(&mut first_a,&mut sec_a);
-        let mut j = BigFloat::add_mut(&mut first_b,&mut sec_b);
-        let mut k_2 = BigFloat::karatsuba(&mut first_a,&mut first_b);
+        let splice_pos = std::cmp::min(a.vals.len()/2,b.vals.len()/2)+1;
+        println!("{}",splice_pos);
+        let lesser = std::cmp::min(a.vals.len(),b.vals.len());
+        let m = a.vals.split_off(splice_pos);
+        let n =b.vals.split_off(splice_pos);
+        let lena = a.vals.len();
+        let lenb = b.vals.len();
+        let lenn = n.len();
+        let lenm = m.len();
+        let mut first_a = BigFloat::new(true,a.vals, (splice_pos)  as i64 );
+        let mut first_b = BigFloat::new(true,b.vals,(splice_pos)  as i64);
+        let mut sec_b = BigFloat::new(true,n,b.decimal-splice_pos as i64);
+        let mut sec_a = BigFloat::new(true,m,a.decimal-splice_pos as i64);
+        println!("First a {}",first_a.to_string());
+        println!("First b {}",first_b.to_string());
+        println!("sec a {}",sec_a.to_string());
+        println!("sec b {}",sec_b.to_string());
+        let mut k_2 = BigFloat::karatsuba(first_a.clone(), first_b.clone());
         //println!("k2 a {}",k_2.to_string());
-        let mut k_0 = BigFloat::karatsuba(&mut sec_a,&mut sec_b);
-        let mut ij = BigFloat::karatsuba(&mut BigFloat::add_mut(&mut first_a,&mut sec_a),&mut BigFloat::add_mut(&mut first_b,&mut sec_b));
-        let mut k_1 = BigFloat::sub_mut(&mut BigFloat::sub_mut(&mut ij,&mut k_2.clone()) ,&mut k_0);
-        k_2.lshift(splice_a[1].len() as i64 *2-1);
-        k_1.lshift(splice_a[1].len() as i64);
-        //println!("k0 a {}",k_0.to_string());
-        //println!("k1 b {}",k_1.to_string());
-        //println!("k2 shifted {}",k_2.to_string());
+        let mut k_0 = BigFloat::karatsuba( sec_a.clone(), sec_b.clone());
+        println!("k0 a {}",k_0.to_string());
+        let mut ij = BigFloat::karatsuba( BigFloat::add_mut(&mut first_a,&mut sec_a), BigFloat::add_mut(&mut first_b,&mut sec_b));
+        println!("ij  {}",ij.to_string());
+        let mut k_1 = BigFloat::sub_mut(&mut BigFloat::sub_mut(&mut ij,&mut k_2.clone()) ,&mut k_0.clone());
+        println!("k0 a {}",k_0.to_string());
+        
+        println!("k1 b {}",k_1.to_string());
+        println!("k2 shifted {}",k_2.to_string());
+        k_2.lshift( splice_pos as i64 *2+2);
+        k_1.lshift( splice_pos as i64+1);
+        
         return BigFloat::add_mut(&mut BigFloat::add_mut(&mut k_2,&mut k_1),&mut k_0);
     }
     pub fn clone(&self) -> BigFloat {
@@ -334,15 +347,17 @@ pub mod arbitrary{
         while *b>1{
             println!("b{:b}",b);
             if *b%2==1{
-                y = BigFloat::quad_mult(&mut a_p, &mut y);
+                let mut a_3 = a_p.clone();
+                y = BigFloat::karatsuba( a_3,   y);
                 
                 *b = *b-1;
             }
-            let mut a_2 = a_p.clone();
-            a_p =  BigFloat::quad_mult(&mut a_p, &mut a_2);
+            let a_2 = a_p.clone();
+            a_p =  BigFloat::karatsuba(a_p, a_2);
+            println!("{:?}",a_p.to_string());
             *b = *b/2
         }
-        return BigFloat::quad_mult(&mut a_p, &mut y);
+        return BigFloat::karatsuba( a_p,  y);
         
     }
 
