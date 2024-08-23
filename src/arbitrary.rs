@@ -149,7 +149,13 @@ pub mod arbitrary{
             if a.vals == b.vals{
                 return BigFloat::zero();
             }
-            return BigFloat::zero();
+            if(a.sign){
+                //a + (-b)
+                return BigFloat::sub(a,b);
+            }else{
+                //-a +b
+                return BigFloat::sub(b,a);
+            }
         }
       }
       
@@ -184,7 +190,7 @@ pub mod arbitrary{
         let delta = outlength - std::cmp::min(a.vals.len(),b.vals.len());
         let mut carry:i8 = 0;
         let mut new_vals:Vec<i8> = vec![0;a.vals.len()];
-        let alarger:usize = (a.vals.len()>b.vals.len()) as usize;
+        let alarger = (a.vals.len()>b.vals.len()) ;
         if a.sign == b.sign{
             if a.vals == b.vals{
                 return BigFloat::zero();
@@ -200,10 +206,15 @@ pub mod arbitrary{
                 if(i>delta){
                     comp = i-delta;
                 }
-                //println!("check: {:?}",(1-errf as i8));
-                //println!("bval: {:?}",b.vals.get(comp).copied().unwrap_or(0)* (1-errf as i8));
-                //println!("aval: {:?}",a.vals.get(i).copied().unwrap_or(0));
-                new_vals[i] = ((a.vals.get(i).copied().unwrap_or(0) - b.vals.get(comp).copied().unwrap_or(0) * (1-errf as i8) + carry )%10+10)%10;
+                let aindex = if(alonger){ i } else { comp };
+                let bindex = if (alonger){ comp } else { i };
+                let era = if (alonger) {1} else {1-errf};
+                let erb = if(alonger) {1-errf} else { i };
+                //See this is really just a complicated method for shifting the digits such that zero padding can be avoided.
+                //123+1231 = 0123+1231, but instead of adding the 0, we just try to access that digit (which cannot be done), and so 0 is returned by safeget.
+                //(1-errf) is a flag to force 0 whenever the position is invalid, i.e. -ve.
+                //the above if statements is just a way to reverse the logic in the case that b is longer than a.
+                new_vals[i] = ((safeget!(a.vals,aindex)*era - safeget!(b.vals,bindex) * erb + carry )%10+10)%10;
                 //println!("carry was: {:?}",carry);
                 if (a.vals.get(i).copied().unwrap_or(0)-b.vals.get(comp).copied().unwrap_or(0)+carry)<0{
                     carry = -1;
@@ -243,7 +254,7 @@ pub mod arbitrary{
         let v = v0.split_off((data.len()+1)/2);
         return [v0, v];
     }
-    pub fn quad_mult(a:&mut BigFloat,b:&mut BigFloat)->BigFloat{
+    pub fn quad_mult(a: BigFloat,b: BigFloat)->BigFloat{
         let mut new_vals:Vec<i8> = vec![0;a.vals.len()+b.vals.len()];
         let mut k = 0;
         let l_max = new_vals.len()-1;
