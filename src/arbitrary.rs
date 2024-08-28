@@ -8,6 +8,7 @@ pub mod arbitrary{
   //sign: True -> Positive, False -> Negative
   //Vals: Stores the digits of the number.
   //Decimal: Stores position of the decimal point
+  #[derive(Debug)]
   pub struct BigFloat{
     sign: bool,
     vals: Vec<i8>,
@@ -202,14 +203,14 @@ pub mod arbitrary{
             //println!("d: {}, al {}",delta.to_string(), alarger.to_string());
             for i in (0..outlength).rev(){
                 let mut comp = 0;
-                let errf = i<delta;
+                let errf = (i<delta) as i8;
                 if(i>delta){
                     comp = i-delta;
                 }
-                let aindex = if(alonger){ i } else { comp };
-                let bindex = if (alonger){ comp } else { i };
-                let era = if (alonger) {1} else {1-errf};
-                let erb = if(alonger) {1-errf} else { i };
+                let aindex = if(alarger){ i } else { comp };
+                let bindex = if (alarger){ comp } else { i };
+                let era = if (alarger) {1} else {1-errf};
+                let erb = if(alarger) {1-errf} else { 1 };
                 //See this is really just a complicated method for shifting the digits such that zero padding can be avoided.
                 //123+1231 = 0123+1231, but instead of adding the 0, we just try to access that digit (which cannot be done), and so 0 is returned by safeget.
                 //(1-errf) is a flag to force 0 whenever the position is invalid, i.e. -ve.

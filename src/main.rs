@@ -1,5 +1,6 @@
 mod arbitrary;
 mod large;
+mod test;
 use crate::arbitrary::arbitrary::BigFloat;
 //use std::time::Instant;
 use indicatif::{ProgressBar, ProgressIterator, ProgressStyle};
