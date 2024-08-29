@@ -1,14 +1,10 @@
-use std::cmp::max;
+
 macro_rules! safeget {
     ($vector:expr,$index:ident) => {
         $vector.get($index).copied().unwrap_or(0)
     };
 }
-pub mod arbitrary{
-  //sign: True -> Positive, False -> Negative
-  //Vals: Stores the digits of the number.
-  //Decimal: Stores position of the decimal point
-  #[derive(Debug)]
+
   pub struct BigFloat{
     sign: bool,
     vals: Vec<i8>,
@@ -29,9 +25,9 @@ pub mod arbitrary{
         }
         
         BigFloat {
-            sign:sign,
-            vals:vals,
-            decimal:decimal,
+            sign,
+            vals,
+            decimal,
         }
     }
     
@@ -49,31 +45,31 @@ pub mod arbitrary{
             return format!("{}{}",neg,self.vals.iter().map(|s| s.to_string()).collect::<Vec<String>>().join(""))
         }
         let (a,b) = self.vals.split_at(self.decimal as usize);
-        return format!("{}{}.{}",neg,a.iter().map(|s| s.to_string()).collect::<Vec<String>>().join("").to_string(),b.iter().map(|s| s.to_string()).collect::<Vec<String>>().join(""));
+        format!("{}{}.{}",neg,a.iter().map(|s| s.to_string()).collect::<Vec<String>>().join(""),b.iter().map(|s| s.to_string()).collect::<Vec<String>>().join(""))
       }
       
     pub fn from_str(s: &str) -> BigFloat{
-        let sign = s.chars().nth(0).unwrap() =='+' || s.chars().nth(0).unwrap() !='-';
-        let decimal = s.replace("-","").replace("+","").split(".").collect::<Vec<&str>>()[0].len();
-        let vals = s.replace(".","").replace("-","").replace("+","");
+        let sign = s.starts_with('+') || !s.starts_with('-');
+        let decimal = s.replace(['-', '+'], "").split('.').collect::<Vec<&str>>()[0].len();
+        let vals = s.replace(['.', '-', '+'], "");
         let vals_split = vals.split("").collect::<Vec<&str>>();
         let new_vals = vals_split[1..vals_split.len()-1].iter().map(|&e| e.parse::<i8>().unwrap()).collect::<Vec<i8>>();
-        return BigFloat::new(sign,new_vals,decimal as i64);
+        BigFloat::new(sign,new_vals,decimal as i64)
       }
       
    
       
     pub fn zero()->BigFloat{
-        return BigFloat::new(true,vec![],0);
+        BigFloat::new(true,vec![],0)
       }
       
       pub fn get_vals(&mut self) -> Vec<i8> {
-        return self.vals.clone();
+        self.vals.clone()
       }
     
       pub fn clear_zeroes_self(&mut self) ->&mut BigFloat {
         let mut i:usize = 0;
-        while ((self.vals[i] == 0 || self.vals[self.vals.len()-1-i] == 0)) {
+        while self.vals[i] == 0 || self.vals[self.vals.len()-1-i] == 0 {
             //println!("{:?}",self.vals);
             if i==self.vals.len()-1{
                 return self
@@ -93,14 +89,14 @@ pub mod arbitrary{
             self.vals.pop();
         }
         
-        return self
+        self
       }
       pub fn clean_zeroes(a:BigFloat) ->BigFloat {
         let mut i:usize= 0;
         let mut new_vals:Vec<i8> = a.vals;
         let mut max_size = new_vals.len();
         let mut decimal = a.decimal;
-        while (new_vals[i] ==0 || new_vals[max_size-1-i] == 0) {
+        while new_vals[i] ==0 || new_vals[max_size-1-i] == 0 {
             if new_vals[i]==0{
                 new_vals.drain(0..0);
                 decimal -= 1;
@@ -111,7 +107,7 @@ pub mod arbitrary{
             }
             i+=1;
         }
-        return BigFloat::new(a.sign,new_vals,decimal);
+        BigFloat::new(a.sign,new_vals,decimal)
       }
 
       pub fn add(a: BigFloat,b: BigFloat)->BigFloat{
@@ -120,19 +116,19 @@ pub mod arbitrary{
         let delta = outlength - std::cmp::min(a.vals.len(),b.vals.len());
         let mut carry:i8 = 0;
         let mut new_vals:Vec<i8> = vec![0;outlength];
-        let alarger = (a.vals.len()>b.vals.len()) ;
+        let alarger = a.vals.len()>b.vals.len() ;
         if a.sign == b.sign{
             
             for i in (0..outlength).rev(){
                 let mut comp = 0;
                 let errf = (i<delta) as i8;
-                if(i>delta){
-                    comp = (i-delta)
+                if i>delta {
+                    comp = i-delta
                 }
                 let aindex = if alarger { i } else {comp};
                 let bindex = if alarger {comp} else{ i };
-                let era =if alarger { 1 } else { (1-errf)};
-                let erb =if alarger { (1-errf) } else { 1 };
+                let era =if alarger { 1 } else { 1-errf};
+                let erb =if alarger { 1-errf } else { 1 };
                 new_vals[i] = (safeget!(a.vals,aindex)*era+ safeget!(b.vals,bindex)*erb + carry )%10;
                 if(safeget!(a.vals,aindex)*era+safeget!(b.vals,bindex)*erb+carry) >= 10{
                     carry = 1;
@@ -145,23 +141,23 @@ pub mod arbitrary{
                 new_vals = [Vec::from([1]),new_vals].concat();
                 
             }
-            return BigFloat::new(a.sign,new_vals,std::cmp::max(a.decimal,b.decimal)+carry as i64);
+            BigFloat::new(a.sign,new_vals,std::cmp::max(a.decimal,b.decimal)+carry as i64)
         }else{
             if a.vals == b.vals{
                 return BigFloat::zero();
             }
-            if(a.sign){
+            if a.sign {
                 //a + (-b)
-                return BigFloat::sub(a,b);
+                BigFloat::sub(a,b)
             }else{
                 //-a +b
-                return BigFloat::sub(b,a);
+                BigFloat::sub(b,a)
             }
         }
       }
       
       pub fn invert_sign(a: BigFloat) -> BigFloat{
-        return BigFloat::new(!a.sign,a.vals,a.decimal)
+        BigFloat::new(!a.sign,a.vals,a.decimal)
       }
       
       pub fn invert(mut self){
@@ -183,7 +179,7 @@ pub mod arbitrary{
                 return false;
             }
         }
-        return false;
+        false
       }
    
       pub fn sub(a: BigFloat,b: BigFloat)->BigFloat{
@@ -191,7 +187,7 @@ pub mod arbitrary{
         let delta = outlength - std::cmp::min(a.vals.len(),b.vals.len());
         let mut carry:i8 = 0;
         let mut new_vals:Vec<i8> = vec![0;a.vals.len()];
-        let alarger = (a.vals.len()>b.vals.len()) ;
+        let alarger = a.vals.len()>b.vals.len() ;
         if a.sign == b.sign{
             if a.vals == b.vals{
                 return BigFloat::zero();
@@ -204,13 +200,13 @@ pub mod arbitrary{
             for i in (0..outlength).rev(){
                 let mut comp = 0;
                 let errf = (i<delta) as i8;
-                if(i>delta){
+                if i>delta {
                     comp = i-delta;
                 }
-                let aindex = if(alarger){ i } else { comp };
-                let bindex = if (alarger){ comp } else { i };
-                let era = if (alarger) {1} else {1-errf};
-                let erb = if(alarger) {1-errf} else { 1 };
+                let aindex = if alarger { i } else { comp };
+                let bindex = if alarger { comp } else { i };
+                let era = if alarger {1} else {1-errf};
+                let erb = if alarger {1-errf} else { 1 };
                 //See this is really just a complicated method for shifting the digits such that zero padding can be avoided.
                 //123+1231 = 0123+1231, but instead of adding the 0, we just try to access that digit (which cannot be done), and so 0 is returned by safeget.
                 //(1-errf) is a flag to force 0 whenever the position is invalid, i.e. -ve.
@@ -223,16 +219,14 @@ pub mod arbitrary{
                     carry = 0;
                 }
             }
-            return BigFloat::new(a.sign,new_vals,a.decimal);
-        } else{
-            if !b.sign {
-                //a-(-b) = a+b
-                
-                return BigFloat::add(a, b);
-            }else{
-                //-a-b = -(a+b)
-                return BigFloat::invert_sign(BigFloat::add(a,b));
-            }
+            BigFloat::new(a.sign,new_vals,a.decimal)
+        } else if !b.sign {
+            //a-(-b) = a+b
+            
+            BigFloat::add(a, b)
+        }else{
+            //-a-b = -(a+b)
+            BigFloat::invert_sign(BigFloat::add(a,b))
         }
       }
       
@@ -242,7 +236,7 @@ pub mod arbitrary{
                 return false;
             }
         }
-        return true;
+        true
       } 
       
       pub fn lshift(&mut self,digits:i64){
@@ -253,11 +247,11 @@ pub mod arbitrary{
       pub fn splice_stepped(data: &Vec<i8>) ->[Vec<i8>;2] {
         let mut v0 =data.clone();
         let v = v0.split_off((data.len()+1)/2);
-        return [v0, v];
+        [v0, v]
     }
     pub fn quad_mult(a: BigFloat,b: BigFloat)->BigFloat{
         let mut new_vals:Vec<i8> = vec![0;a.vals.len()+b.vals.len()];
-        let mut k = 0;
+        let _k = 0;
         let l_max = new_vals.len()-1;
         for j in 0..b.vals.len(){
             let b_index = b.vals.len()-1-j;
@@ -278,14 +272,14 @@ pub mod arbitrary{
             new_vals.drain(0..1);
             return BigFloat::new((a.sign&&b.sign)||(!a.sign&&!b.sign),new_vals,a.decimal+b.decimal-1);
         }
-        return BigFloat::new((a.sign&&b.sign)||(!a.sign&&!b.sign),new_vals,a.decimal+b.decimal);
+        BigFloat::new((a.sign&&b.sign)||(!a.sign&&!b.sign),new_vals,a.decimal+b.decimal)
     }
     fn number_to_vec(n: i16) -> Vec<i8> {
         let mut digits:Vec<i8> = Vec::new();
         let mut n = n;
         while n > 9 {
             digits.push((n % 10) as i8);
-            n = n / 10;
+            n /= 10;
         }
         digits.push(n as i8);
         digits.reverse();
@@ -371,5 +365,4 @@ pub mod arbitrary{
    
   } 
   */
-}
 }

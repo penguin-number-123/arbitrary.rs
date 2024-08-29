@@ -1,5 +1,5 @@
 pub mod arbitrary{
-  pub struct large{
+  pub struct Large{
     mantissa:f64,
     exponent: [u64;4],
     sign:bool

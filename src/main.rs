@@ -1,14 +1,14 @@
-mod arbitrary;
-mod large;
-mod test;
-use crate::arbitrary::arbitrary::BigFloat;
+
+use bigfloat::bigfloat::BigFloat;
+
+
 //use std::time::Instant;
-use indicatif::{ProgressBar, ProgressIterator, ProgressStyle};
-use std::fs;
+
+
 
 fn main() {
-    let mut a = BigFloat::new(false,vec![1,0,0,0,0,0,0,0],3);
-    let mut b = BigFloat::new(false, vec![1,0,0,0,0,0],3);
+    let _a = BigFloat::new(false,vec![1,0,0,0,0,0,0,0],3);
+    let _b = BigFloat::new(false, vec![1,0,0,0,0,0],3);
     let  c = BigFloat::from_str("1231");
     let  d = BigFloat::from_str("129");
     let e = BigFloat::add(d, c);
