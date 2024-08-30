@@ -9,9 +9,7 @@ use Arbitrary::bigfloat::bigfloat::BigFloat;
 fn main() {
     let _a = BigFloat::new(false,vec![1,0,0,0,0,0,0,0],3);
     let _b = BigFloat::new(false, vec![1,0,0,0,0,0],3);
-    let  c = BigFloat::from_str("1231");
-    let  d = BigFloat::from_str("129");
-    let e = BigFloat::add(d, c);
+    
     println!("{}",e.to_string());
     //let pb = ProgressBar::new(6972593);
     //pb.set_style(

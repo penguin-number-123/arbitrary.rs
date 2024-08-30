@@ -1,4 +1,9 @@
 use crate::bigfloat::bigfloat::BigFloat;
+impl fmt::Display for Point {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        write!(f, "({}, {})", self.x, self.y)
+    }
+}
 impl BigFloat {
     pub fn to_string(&self) -> String{
         //let's ignore the cursed expression
@@ -15,10 +20,14 @@ impl BigFloat {
         }
         let (a,b) = self.vals.split_at(self.decimal as usize);
         format!("{}{}.{}",neg,a.iter().map(|s| s.to_string()).collect::<Vec<String>>().join(""),b.iter().map(|s| s.to_string()).collect::<Vec<String>>().join(""))
-      }
+    }
+    ///Returns the BigFloat representation of the string.
+    /// #Example:
+    /// ```let a = BigFloat::from_str("19.12023")```
+    /// 
+    /// 
     pub fn from_str(s: &str) -> BigFloat{
-        let sign = s.starts_with('+') || !s.starts_with("-");
-        println!("{}",!s.starts_with("-"));
+        let sign = s.starts_with('+') || !s.starts_with('-');
         let decimal = s.replace(['-', '+'], "").split('.').collect::<Vec<&str>>()[0].len();
         let vals = s.replace(['.', '-', '+'], "");
         let vals_split = vals.split("").collect::<Vec<&str>>();

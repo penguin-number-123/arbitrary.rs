@@ -8,7 +8,7 @@ impl PartialEq for BigFloat{
 }
 impl BigFloat{
     pub fn greater_than(a:&BigFloat,b:&BigFloat)->bool{
-        if (a.sign!=b.sign){
+        if a.sign!=b.sign {
             return a.sign;
         }
         if a.decimal>b.decimal{

@@ -1,8 +1,16 @@
+#![crate_name = "doc"]
+#[derive(Debug)]
 
-  #[derive(Debug)]
-  //sign: false == negative, true == positive
-  pub struct BigFloat{
-    pub sign: bool,
-    pub vals: Vec<i8>,
-    pub decimal: i64,
-  }
+pub struct BigFloat{
+  pub sign: bool,
+  pub vals: Vec<i8>,
+  pub decimal: i64,
+}
+//Free space for renting
+////////////////////////////////
+/// 
+/// 
+/// 
+///      hi!
+/// (")>
+////////////////////////////////

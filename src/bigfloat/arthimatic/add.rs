@@ -1,12 +1,19 @@
 use crate::bigfloat::bigfloat::BigFloat;
+/// This macro allows us to not have to make sure arrays are the same size, at the expense of more difficult algorithm design
+/// 
+/// Basically, get the index of the array, if it exists; otherwise, return 0.
 macro_rules! safeget {
     ($vector:expr,$index:ident) => {
         $vector.get($index).copied().unwrap_or(0)
     };
 }
 impl BigFloat{
+    /// Adds two numbers together, returns the result.
+    /// 
+    /// Does not support more than one addend.
+    /// 
+    /// If you want more than one you will need to chain them together.
     pub fn add(a: BigFloat,b: BigFloat)->BigFloat{
-        //BigFloat::normalize_mut(a, b);
         let outlength:usize = std::cmp::max(a.vals.len(),b.vals.len());
         let delta = outlength - std::cmp::min(a.vals.len(),b.vals.len());
         let mut carry:i8 = 0;

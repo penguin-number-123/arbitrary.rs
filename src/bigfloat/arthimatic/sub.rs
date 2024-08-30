@@ -42,6 +42,8 @@ pub fn sub(a: BigFloat,b: BigFloat)->BigFloat{
                     carry = 0;
                 }
             }
+            //subtraction generats loads of leading or trailing decimals. We should attempt to eliminate this.
+
             BigFloat::new(a.sign,new_vals,a.decimal)
         } else if !b.sign {
             //a-(-b) = a+b
