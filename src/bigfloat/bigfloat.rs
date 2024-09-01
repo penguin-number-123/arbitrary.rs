@@ -1,4 +1,3 @@
-#![crate_name = "doc"]
 #[derive(Debug)]
 
 pub struct BigFloat{

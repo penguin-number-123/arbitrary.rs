@@ -42,5 +42,11 @@ mod tests {
         let b =  BigFloat::new(false,vec![0,9,2,3,4,5,6,7,8,9],1);
         assert_eq!(BigFloat::sub(a,b),BigFloat::new(true,vec![0,8,0,0,0,0,0,0,0,0],1));
     }
-
+    #[test]
+    fn test_quad_mul(){
+        let a = BigFloat::new(true,vec![1,2,3,4,5,6,7,8],5);
+        let b = BigFloat::new(true,vec![7,6,5,4,3,2,1,8],5);
+        assert_eq!(BigFloat::quad_mult(a, b),BigFloat::new(true,vec![9,4,4,9,7,7,9,2,2,5,1,1,8,0,4],10));
+        println!("{}",BigFloat::quad_mult(a, b).to_string());
+    }
 }

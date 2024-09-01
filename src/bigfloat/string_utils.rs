@@ -1,9 +1,9 @@
 use crate::bigfloat::bigfloat::BigFloat;
-impl fmt::Display for Point {
-    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
-        write!(f, "({}, {})", self.x, self.y)
-    }
-}
+//impl fmt::Display for Point {
+//    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+//        write!(f, "({}, {})", self.x, self.y)
+//    }
+//}
 impl BigFloat {
     pub fn to_string(&self) -> String{
         //let's ignore the cursed expression
