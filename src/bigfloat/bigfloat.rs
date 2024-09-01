@@ -5,6 +5,7 @@ pub struct BigFloat{
   pub vals: Vec<i8>,
   pub decimal: i64,
 }
+/* 
 //Free space for renting
 ////////////////////////////////
 /// 
@@ -13,3 +14,4 @@ pub struct BigFloat{
 ///      hi!
 /// (")>
 ////////////////////////////////
+/// */

@@ -10,7 +10,7 @@ fn main() {
     let _a = BigFloat::new(false,vec![1,0,0,0,0,0,0,0],3);
     let _b = BigFloat::new(false, vec![1,0,0,0,0,0],3);
     
-    println!("{}",e.to_string());
+    //println!("{}",e.to_string());
     //let pb = ProgressBar::new(6972593);
     //pb.set_style(
     //    ProgressStyle::with_template(

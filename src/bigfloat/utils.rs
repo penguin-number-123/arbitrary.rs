@@ -1,6 +1,13 @@
 use crate::bigfloat::bigfloat::BigFloat;
 impl BigFloat{
-  pub fn get_vals(&mut self) -> Vec<i8> {
+  /// Returns the vecotr contain the values of the BigFloat number. Could be useful, perhaps.
+  /// # Example:
+  /// ```
+  /// use Arbitrary::bigfloat::bigfloat::BigFloat;
+  /// let a = BigFloat::new(true,vec![2,0,2,4,0,1,0,9,1,4,4,4],5);
+  /// assert_eq!(a.get_vals(),vec![2,0,2,4,0,1,0,9,1,4,4,4]);
+  /// ```
+  pub fn get_vals(self) -> Vec<i8> {
     self.vals.clone()
   }
 
@@ -46,18 +53,50 @@ impl BigFloat{
     }
     BigFloat::new(a.sign,new_vals,decimal)
   }
+  /// Inverts the sign of a BigFloat, returns the inverted number.
+  /// 
+  /// Note this is an in-place modifier and returns `()`.
+  /// # Example:
+  /// ```
+  /// use Arbitrary::bigfloat::bigfloat::BigFloat;
+  /// let a = BigFloat::new(false,vec![1],1);
+  /// let b = BigFloat::invert_sign(a);
+  /// assert_eq!(b,BigFloat::new(true,vec![1],1));
+  /// ```
   pub fn invert_sign(a: BigFloat) -> BigFloat{
     BigFloat::new(!a.sign,a.vals,a.decimal)
   }
-  
+  /*/// Inverts the sign of a mutable BigFloat.
+  /// 
+  /// Note this is an in-place modifier and returns `()`.
+  /// # Example:
+  /// ```
+  /// use Arbitrary::bigfloat::bigfloat::BigFloat;
+  /// let a = BigFloat::new(false,vec![1],1);
+  /// &a.invert();
+  /// assert_eq!(a,BigFloat::new(true,vec![1],1));
+  /// ```
   pub fn invert(mut self){
     self.sign = !self.sign;
-  }
+  }*/
+  /* /// Does a left shift on the value of the &mutable BigFloat.
+  /// 
+  /// This is equivalent to the << operator, only for base 10.
+  /// # Panics:
+  /// If the shifted vector is larger than the maximum permissible size.
+  /// 
+  /// # Example:
+  /// 
+  /// use Arbitrary::bigfloat::bigfloat::BigFloat;
+  /// let mut a = BigFloat::new(true,vec![2,0,2,4],2);
+  /// &a.lshift(5);
+  /// assert_eq!(a,BigFloat::new(true,vec![2,0,2,4,0,0,0,0,0],7));
+  /// 
   pub fn lshift(&mut self,digits:i64){
     let mut zeroes:Vec<i8> = vec![0;digits as usize];
     self.vals.append(&mut zeroes);
     self.decimal += digits as i64;
-  }
+  }*/
   pub fn splice_stepped(data: &Vec<i8>) ->[Vec<i8>;2] {
     let mut v0 =data.clone();
     let v = v0.split_off((data.len()+1)/2);

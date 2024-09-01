@@ -5,6 +5,13 @@ use crate::bigfloat::bigfloat::BigFloat;
 //    }
 //}
 impl BigFloat {
+    /// Returns the a string representing the BigFloat number. 
+    /// #Example:
+    /// ```
+    /// use Arbitrary::bigfloat::bigfloat::BigFloat;
+    /// let a = BigFloat::new(true,vec![1,9,1,2,0,2,3],2);
+    /// assert_eq!(a.to_string(),"19.12023".to_string());
+    /// ```
     pub fn to_string(&self) -> String{
         //let's ignore the cursed expression
         //Basically we take the vector ->slice -> iterable -> string each element -> join everything
@@ -23,9 +30,11 @@ impl BigFloat {
     }
     ///Returns the BigFloat representation of the string.
     /// #Example:
-    /// ```let a = BigFloat::from_str("19.12023")```
-    /// 
-    /// 
+    /// ```
+    /// use Arbitrary::bigfloat::bigfloat::BigFloat;
+    /// let a = BigFloat::from_str("19.12023");
+    /// assert_eq!(a,BigFloat::new(true,vec![1,9,1,2,0,2,3],2));
+    /// ```
     pub fn from_str(s: &str) -> BigFloat{
         let sign = s.starts_with('+') || !s.starts_with('-');
         let decimal = s.replace(['-', '+'], "").split('.').collect::<Vec<&str>>()[0].len();

@@ -11,6 +11,7 @@ impl BigFloat {
     /// Brief Example: 12.34 = ```(True, [ 1, 2, 3, 4 ],2)```
     /// ## Example
     /// ```
+    /// use Arbitrary::bigfloat::bigfloat::BigFloat;
     /// let a = BigFloat::new(true,vec![1,2,3,4],2);
     /// ```
     /// For faster input, try using ```BigFloat::from_str(&str)``` instead.

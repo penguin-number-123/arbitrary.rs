@@ -37,6 +37,6 @@ impl BigFloat{
     }
     pub fn k_mul(a: BigFloat, b: BigFloat)  -> BigFloat {
     //Modified to choose the split point as the smaller of the length of a and b /2
-
+        return BigFloat::zero();
     }
 }

@@ -2,7 +2,6 @@ use crate::bigfloat::bigfloat::BigFloat;
 impl PartialEq for BigFloat{
     fn eq(&self, other: &Self)-> bool{
         self.vals == other.vals && self.sign == other.sign && self.decimal == other.decimal
-        
     }
     
 }

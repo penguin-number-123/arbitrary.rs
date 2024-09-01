@@ -1,7 +1,8 @@
 
+
 mod tests {
-    
     use crate::bigfloat::bigfloat::BigFloat;
+    
     #[test]
     fn test_str_to_bf(){
         let string = "0.123456789";
@@ -46,7 +47,8 @@ mod tests {
     fn test_quad_mul(){
         let a = BigFloat::new(true,vec![1,2,3,4,5,6,7,8],5);
         let b = BigFloat::new(true,vec![7,6,5,4,3,2,1,8],5);
-        assert_eq!(BigFloat::quad_mult(a, b),BigFloat::new(true,vec![9,4,4,9,7,7,9,2,2,5,1,1,8,0,4],10));
-        println!("{}",BigFloat::quad_mult(a, b).to_string());
+        let c = BigFloat::quad_mult(a, b);
+        assert_eq!(c,BigFloat::new(true,vec![9,4,4,9,7,7,9,2,2,5,1,1,8,0,4],9));
+        println!("{}",c.to_string());
     }
 }
