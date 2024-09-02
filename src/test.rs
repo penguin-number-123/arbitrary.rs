@@ -51,4 +51,12 @@ mod tests {
         assert_eq!(c,BigFloat::new(true,vec![9,4,4,9,7,7,9,2,2,5,1,1,8,0,4],9));
         println!("{}",c.to_string());
     }
+    #[test]
+    fn test_quad_mul_diff(){
+        let a = BigFloat::new(true,vec![1,2,3,4,5,6],5);
+        let b = BigFloat::new(true,vec![7,6,5,4,3,2,1,8],5);
+        let c = BigFloat::quad_mult(b, a);
+        assert_eq!(c,BigFloat::new(true,vec![9,4,4,9,7,1,9,5,2,1,4,0,8],9));
+        println!("{}",c.to_string());
+    }
 }

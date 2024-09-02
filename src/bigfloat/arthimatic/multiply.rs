@@ -10,6 +10,13 @@ impl BigFloat{
     /// Runs in O(n^2) time, used for small numbers <20 digits in length
     /// 
     /// For larger numbers use karatsuba multiplication, or ~Schonehage~ Schönhage–Strassen algorithm.
+    /// # Example:
+    /// ```
+    /// use Arbitrary::bigfloat::bigfloat::BigFloat;
+    /// let a = BigFloat::new(true,vec![1,2,7,8,9,9,2],5);
+    /// let b = BigFloat::new(false,vec![3,1,4,1,5,9,2,6],6);
+    /// assert_eq!(BigFloat::quad_mult(a,b),BigFloat::new(false,vec![4,0,1,8,0,7,1,8,0,2,6,5,9,2],10));
+    /// ```
     pub fn quad_mult(a: BigFloat,b: BigFloat)->BigFloat{
         let mut new_vals:Vec<i8> = vec![0;a.vals.len()+b.vals.len()];
         let _k = 0;
@@ -35,8 +42,18 @@ impl BigFloat{
         }
         BigFloat::new((a.sign&&b.sign)||(!a.sign&&!b.sign),new_vals,a.decimal+b.decimal)
     }
+    /// Karatsuba algorithm for multiplication.
+    /// Note: it automatically switches to quadratic multiplication for digit length < 20. This reduces excess memory.
+    /// 
     pub fn k_mul(a: BigFloat, b: BigFloat)  -> BigFloat {
-    //Modified to choose the split point as the smaller of the length of a and b /2
-        return BigFloat::zero();
+        //Check if it's worth it to do karatsuba.
+        if(a.vals.len() >20 && b.vals.len() >20){
+            //Modified to choose the split point as the smaller of the length of a and b /2
+            let mut new_vals: Vec<i8> = vec![0;a.vals.len()+b.vals.len()];
+            let split_index = std::cmp::min(a.vals.len(),b.vals.len())/2;
+
+        }
+        //It wasn't worth it.
+        return BigFloat::quad_mult(a, b);
     }
 }
