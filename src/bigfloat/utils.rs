@@ -79,7 +79,7 @@ impl BigFloat{
   pub fn invert(mut self){
     self.sign = !self.sign;
   }*/
-  /* /// Does a left shift on the value of the &mutable BigFloat.
+   /// Does a left shift on the value of the &mutable BigFloat.
   /// 
   /// This is equivalent to the << operator, only for base 10.
   /// # Panics:
@@ -92,11 +92,13 @@ impl BigFloat{
   /// &a.lshift(5);
   /// assert_eq!(a,BigFloat::new(true,vec![2,0,2,4,0,0,0,0,0],7));
   /// 
-  pub fn lshift(&mut self,digits:i64){
-    let mut zeroes:Vec<i8> = vec![0;digits as usize];
-    self.vals.append(&mut zeroes);
-    self.decimal += digits as i64;
-  }*/
+  pub fn lshift(&self,digits:i64)->BigFloat{
+    let mut vals = self.vals.clone();
+    let mut zeroes  = vec![0;digits as usize];
+    vals.append(&mut zeroes);
+    let new_vals = vals.clone();
+    return BigFloat::new(self.sign,new_vals,self.decimal+digits);
+  }
   pub fn splice_stepped(data: &Vec<i8>) ->[Vec<i8>;2] {
     let mut v0 =data.clone();
     let v = v0.split_off((data.len()+1)/2);
@@ -112,5 +114,8 @@ fn number_to_vec(n: i16) -> Vec<i8> {
     digits.push(n as i8);
     digits.reverse();
     digits
+}
+pub fn clone(&self)->BigFloat{
+  return BigFloat::new(self.sign,self.vals.clone(),self.decimal)
 }
 }
