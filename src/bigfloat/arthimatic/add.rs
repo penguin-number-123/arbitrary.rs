@@ -43,7 +43,7 @@ impl BigFloat{
                 new_vals = [Vec::from([1]),new_vals].concat();
                 
             }
-            BigFloat::new(a.sign,new_vals,std::cmp::max(a.decimal,b.decimal)+carry as i64)
+            BigFloat::new(a.sign,new_vals,std::cmp::max(a.decimal,b.decimal)+carry as usize)
         }else{
             if a.vals == b.vals{
                 return BigFloat::zero();

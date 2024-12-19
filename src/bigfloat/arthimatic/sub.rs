@@ -36,7 +36,7 @@ pub fn sub(a: BigFloat,b: BigFloat)->BigFloat{
                 //the above if statements is just a way to reverse the logic in the case that b is longer than a.
                 new_vals[i] = ((safeget!(a.vals,aindex)*era - safeget!(b.vals,bindex) * erb + carry )%10+10)%10;
                 //println!("carry was: {:?}",carry);
-                if (a.vals.get(i).copied().unwrap_or(0)-b.vals.get(comp).copied().unwrap_or(0)+carry)<0{
+                if (safeget!(a.vals,i)-safeget!(b.vals,comp)+carry)<0{
                     carry = -1;
                 }else{
                     carry = 0;

@@ -92,7 +92,7 @@ impl BigFloat{
   /// &a.lshift(5);
   /// assert_eq!(a,BigFloat::new(true,vec![2,0,2,4,0,0,0,0,0],7));
   /// 
-  pub fn lshift(&self,digits:i64)->BigFloat{
+  pub fn lshift(&self,digits:usize)->BigFloat{
     let mut vals = self.vals.clone();
     let mut zeroes  = vec![0;digits as usize];
     vals.append(&mut zeroes);

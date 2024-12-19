@@ -15,7 +15,7 @@ impl BigFloat {
     /// let a = BigFloat::new(true,vec![1,2,3,4],2);
     /// ```
     /// For faster input, try using ```BigFloat::from_str(&str)``` instead.
-    pub fn new(sign: bool, vals: Vec<i8>, decimal: i64) -> BigFloat{
+    pub fn new(sign: bool, vals: Vec<i8>, decimal:usize) -> BigFloat{
         //Quickly check if the decimal point is valid
         if decimal< 0 {
             panic!("ValueError: Decimal point position is negative! Position:{}", decimal);

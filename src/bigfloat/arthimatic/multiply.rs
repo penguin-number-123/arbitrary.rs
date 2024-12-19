@@ -66,12 +66,12 @@ impl BigFloat{
             let b_2 = b_prime.split_off(b.vals.len() - split_index);
             let a_2_len = a_2.len();
             let b_2_len = b_2.len();
-            let bf_a2 = BigFloat::new(true,a_2,a_2_len as i64);
-            let bf_b2 = BigFloat::new( true,b_2,b_2_len as i64);
+            let bf_a2 = BigFloat::new(true,a_2,a_2_len);
+            let bf_b2 = BigFloat::new( true,b_2,b_2_len);
             let a_prime_len = a_prime.len();
             let b_prime_len = b_prime.len();
-            let bf_a_prime = BigFloat::new(true,a_prime,a_prime_len as i64);
-            let bf_b_prime = BigFloat::new(true,b_prime,b_prime_len as i64);
+            let bf_a_prime = BigFloat::new(true,a_prime,a_prime_len);
+            let bf_b_prime = BigFloat::new(true,b_prime,b_prime_len);
             
             println!("a_p: {:?}",bf_a_prime);
             println!("a2: {:?}",bf_a2);
@@ -84,7 +84,7 @@ impl BigFloat{
             println!("z0: {:?}",z0);
             println!("z1: {:?}",z1);
             println!("z2: {:?}",z2);
-            return BigFloat::add(BigFloat::add(z2.lshift((split_index) as i64*2),BigFloat::sub(BigFloat::sub(z1,z2),z0.clone()).lshift((split_index) as i64)), z0);
+            return BigFloat::add(BigFloat::add(z2.lshift(split_index*2),BigFloat::sub(BigFloat::sub(z1,z2),z0.clone()).lshift(split_index)), z0);
         }   
         //It wasn't worth it.
         return BigFloat::quad_mult(a, b);
@@ -96,7 +96,7 @@ impl BigFloat{
         let b_sign = b.sign;
         let mut c = BigFloat::k_mul(a,b);
         c.sign = (a_sign&&b_sign)||(!a_sign&&!b_sign);
-        c.decimal = (c.vals.len() - a_decimal - b_decimal ) as i64;
+        c.decimal = (c.vals.len() - a_decimal - b_decimal ) ;
         return c;
     }
 }

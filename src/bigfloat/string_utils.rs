@@ -41,6 +41,6 @@ impl BigFloat {
         let vals = s.replace(['.', '-', '+'], "");
         let vals_split = vals.split("").collect::<Vec<&str>>();
         let new_vals = vals_split[1..vals_split.len()-1].iter().map(|&e| e.parse::<i8>().unwrap()).collect::<Vec<i8>>();
-        BigFloat::new(sign,new_vals,decimal as i64)
+        BigFloat::new(sign,new_vals,decimal)
     }
 }
