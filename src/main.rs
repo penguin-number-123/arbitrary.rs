@@ -2,14 +2,20 @@
 use Arbitrary::bigfloat::bigfloat::BigFloat;
 
 
-//use std::time::Instant;
+use std::time::Instant;
 
 
 
 fn main() {
-    let _a = BigFloat::new(false,vec![1,0,0,0,0,0,0,0],3);
-    let _b = BigFloat::new(false, vec![1,0,0,0,0,0],3);
-    
+
+    let a = BigFloat::new(true,vec![75, 88, 55, 3, 60, 25, 67, 54, 18, 32, 79, 14, 80, 73, 52, 93, 70, 72, 90, 71, 90, 17, 15, 4, 74, 20, 0, 48, 89, 89, 22, 25, 54, 25, 94, 86, 40, 82, 84, 56, 96],2);
+    let b = BigFloat::new(true,vec![75, 88, 55, 3, 60, 25, 67, 54, 18, 32, 79, 14, 80, 73, 52, 93, 70, 72, 90, 71, 90, 17, 15, 4, 74, 20, 0, 48, 89, 89, 22, 25, 54, 25, 94, 86, 40, 82, 84, 56, 96],2);
+    let t = Instant::now();
+    let c = BigFloat::quad_mult(&a, &b);
+    let t2 = t.elapsed();
+    println!("{:?}",t2); 
+    println!("{:?}",c)
+    //println!("{:?}",c);
     //println!("{}",e.to_string());
     //let pb = ProgressBar::new(6972593);
     //pb.set_style(

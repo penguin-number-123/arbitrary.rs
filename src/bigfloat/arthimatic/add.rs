@@ -31,8 +31,8 @@ impl BigFloat{
                 let bindex = if alarger {comp} else{ i };
                 let era =if alarger { 1 } else { 1-errf};
                 let erb =if alarger { 1-errf } else { 1 };
-                new_vals[i] = (safeget!(a.vals,aindex)*era+ safeget!(b.vals,bindex)*erb + carry )%10;
-                if(safeget!(a.vals,aindex)*era+safeget!(b.vals,bindex)*erb+carry) >= 10{
+                new_vals[i] = (safeget!(a.vals,aindex)*era+ safeget!(b.vals,bindex)*erb + carry )%100;
+                if(safeget!(a.vals,aindex)*era+safeget!(b.vals,bindex)*erb+carry) >= 100{
                     carry = 1;
                 }else{
                     carry = 0;

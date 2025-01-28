@@ -7,7 +7,10 @@ macro_rules! safeget {
 impl BigFloat{
 pub fn sub(a: BigFloat,b: BigFloat)->BigFloat{
         let outlength:usize = std::cmp::max(a.vals.len(),b.vals.len());
+        println!("A.vals.len() {}",a.vals.len());
+        println!("b.vals.len() {}",b.vals.len());
         let delta = outlength - std::cmp::min(a.vals.len(),b.vals.len());
+        println!("Delta {}",delta);
         let mut carry:i8 = 0;
         let mut new_vals:Vec<i8> = vec![0;a.vals.len()];
         let alarger = a.vals.len()>b.vals.len() ;
@@ -16,11 +19,12 @@ pub fn sub(a: BigFloat,b: BigFloat)->BigFloat{
                 return BigFloat::zero();
             }
             if BigFloat::greater_than(&b, &a){
-                //println!("{} - {}",b.to_string(), a.to_string());
+                println!("{} - {}",b.to_string(), a.to_string());
                 return BigFloat::invert_sign(BigFloat::sub(b, a));
             }
             //println!("d: {}, al {}",delta.to_string(), alarger.to_string());
             for i in (0..outlength).rev(){
+                println!("i: {}",i);
                 let mut comp = 0;
                 let errf = (i<delta) as i8;
                 if i>delta {

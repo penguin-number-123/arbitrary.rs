@@ -94,8 +94,8 @@ impl BigFloat{
   /// 
   pub fn lshift(&self,digits:usize)->BigFloat{
     let mut vals = self.vals.clone();
-    let mut zeroes  = vec![0;digits as usize];
-    vals.append(&mut zeroes);
+    let zeroes  = vec![0;digits as usize];
+    vals.extend( zeroes);
     let new_vals = vals.clone();
     return BigFloat::new(self.sign,new_vals,self.decimal+digits);
   }
